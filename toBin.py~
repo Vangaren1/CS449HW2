@@ -1,0 +1,9 @@
+import binascii
+
+n = "Mark Thompson"
+buffString = ''+str.encode(n)
+for i in range(100):
+	buffString += 'a'
+by = binascii.a2b_hex(''.join(buffString))
+f = open('testFile','wb')
+f.write(by)
