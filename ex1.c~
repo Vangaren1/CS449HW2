@@ -1,0 +1,62 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+void f(int n, int m, char *str)
+{
+	FILE *f = fopen(str, "r");
+	char buf[n];
+	size_t pos;
+
+	if (m >= n) {
+		fprintf(stderr, "Invalid call of f\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (f == NULL) {
+		perror("Invalid file with buffer");
+		exit(EXIT_FAILURE);
+	}
+
+	printf("Reading file into buffer at %p\n", buf);
+
+	fseek(f, 0, SEEK_END);
+	pos = ftell(f);
+	fseek(f, 0, SEEK_SET);
+	/* here's the bug: pos should be at most n for legit calls */
+	fread(buf, sizeof(buf[0]), pos, f);
+
+	buf[m] = 0;
+	printf("Your name is: %s\n", buf);
+	printf("First 32 hex values read from file (A=0x41, a=0x61):");
+	for (pos = 0; pos < 800; pos++) {
+		if (pos % 16 == 0)
+			printf("\n\t");
+		printf("0x%02x ", (unsigned char)buf[pos]);
+	}
+	printf("\n");
+}
+
+int main(int argc, char **argv)
+{
+	int m, n;
+
+	if (argc != 4) {
+		fprintf(stderr, "Usage: ./ex1 firstname lastname filename\n");
+		exit(EXIT_FAILURE);
+	}
+
+	m = 10 * (argv[1][0] - 'A' + 1) + (argv[2][0] - 'A' + 1);
+	if (m < 0) m = -m;
+	n = strlen(argv[1]) + strlen(argv[2]) + 1;
+	if (m < 42 * n + 42) m += 42 * n + 42;
+	if (m > 1024) m = 1024;
+	if (n > 50) n = 50;
+
+	fprintf(stdout, "Numbers (m, n): %d %d\n", m, n);
+	fprintf(stdout, "Provided name: %s %s\n", argv[1], argv[2]);
+	f(m, n, argv[3]);
+	printf("This message should not be printed\n");
+
+	return 0;
+}

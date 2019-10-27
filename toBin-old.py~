@@ -39,5 +39,5 @@ by = myName + buffString + sp
 #by += preserve
 #by += retAdr
          # return address that should overwrite the existing return address and send code to shell code
-f = open('testFile','wb')
+f = open('testFile2','wb')
 f.write(by)

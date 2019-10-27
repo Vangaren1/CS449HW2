@@ -1,0 +1,14 @@
+.PHONY: all clean md5
+
+TARGET = ./ex1
+CC = gcc
+CFLAGS = -Wall -Wextra -g -f no-stack-protector -m32 -z execstack
+LDFLAGS = -fno-stack-protector -m32 -z execstack
+
+all: md5
+
+md5: $(TARGET)
+	md5sum $(TARGET)
+
+clean:
+	$(RM) $(TARGET)
